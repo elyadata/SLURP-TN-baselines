@@ -1,0 +1,35 @@
+# train.py
+
+if not hparams["skip_prep"]:
+    from data_prep import prepare_slurptn
+
+    run_on_main(
+        prepare_slurptn,
+        kwargs={
+            "data_folder": hparams["data_folder"],
+        },
+    )
+
+# YAML config:
+data_folder: data
+wav_folder: !ref <data_folder>/wav
+manifest_folder: !ref <data_folder>/manifests
+skip_prep: False
+
+train_csv: !ref <manifest_folder>/train.csv
+valid_csv: !ref <manifest_folder>/validation.csv
+test_csv: !ref <manifest_folder>/test.csv
+
+# import scoring:
+from scoring import (
+    clean_whisper_tokens,
+    compute_metrics,
+    compute_metrics_from_jsonl,
+    write_metrics_txt,
+    write_predictions_jsonl,
+)
+
+metrics = compute_metrics_from_jsonl(
+    predictions_file=predictions_file,
+    task=self.hparams["task"],
+)

@@ -1,5 +1,9 @@
-"""Data preparation for the SLURP-TN SpeechBrain recipe."""
+"""Data preparation for the SLURP-TN SpeechBrain recipe.
 
+Authors
+-------
+ * Haroun Elleuch, 2026
+"""
 import argparse
 import csv
 import re
