@@ -6,21 +6,31 @@ Authors
 """
 import argparse
 import csv
+import logging
 import re
+import sys
 from io import BytesIO
 from pathlib import Path
 
 import soundfile as sf
 from datasets import Audio, Dataset, DatasetDict, load_dataset
 from speechbrain.utils.logger import get_logger
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    stream=sys.stdout,
+    force=True,
+)
 
 logger = get_logger(__name__)
 
 HF_REPO_ID = "Elyadata/SLURP-TN"
 HF_TUN_SLU_COLUMN = "tun_slu_annoation"
 CSV_TUN_SLU_COLUMN = "tun_slu_annotation"
+HF_INTENT_COLUMN = "intent"
 
 SLU_BRACKET_PATTERN = re.compile(
     r"\[(?P<label>[^\[\]:]+)\s*:\s*(?P<value>[^\[\]]+?)\]"
@@ -119,6 +129,7 @@ def prepare_split(
                 CSV_TUN_SLU_COLUMN: convert_slu_annotation(
                     example[HF_TUN_SLU_COLUMN]
                 ),
+                "intent": example[HF_INTENT_COLUMN],
             }
         )
 
@@ -196,6 +207,7 @@ def validate_columns(dataset: Dataset, split: str) -> None:
         "audio",
         "tun_transcription",
         HF_TUN_SLU_COLUMN,
+        HF_INTENT_COLUMN,
     ]
 
     missing_columns = [
@@ -220,6 +232,7 @@ def write_csv_manifest(
         "wav",
         "tun_transcription",
         CSV_TUN_SLU_COLUMN,
+        "intent",
     ]
 
     with open(csv_path, mode="w", encoding="utf-8", newline="") as csv_file:
