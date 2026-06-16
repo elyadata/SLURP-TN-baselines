@@ -10,7 +10,7 @@ __set_seed: !apply:speechbrain.utils.seed_everything [!ref <seed>]
 
 
 # Experiment
-experiment_id: medium_unfrozen_full_embed_table
+experiment_id: baseline
 output_folder: !ref ./results/<experiment_id>
 
 dev_scores_dir: !ref <output_folder>/dev_scores
@@ -41,7 +41,7 @@ custom_tokenizer_path: !ref <output_folder>/custom_tokenizer
 normalized_transcripts: False
 
 sample_rate: 16000
-avoid_if_longer_than: 30.0
+avoid_if_longer_than: 10.0
 
 freeze_whisper: False
 freeze_encoder: False
