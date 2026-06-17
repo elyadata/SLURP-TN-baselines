@@ -14,7 +14,6 @@ import logging
 
 import speechbrain as sb
 import speechbrain.core
-from tqdm.auto import tqdm as auto_tqdm
 
 import soundfile as sf
 import torch
@@ -25,7 +24,15 @@ from speechbrain.utils.data_utils import undo_padding
 from speechbrain.utils.distributed import if_main_process, run_on_main
 from speechbrain.utils.logger import get_logger
 
-speechbrain.core.tqdm = auto_tqdm
+from tqdm.auto import tqdm as auto_tqdm
+
+
+def colab_tqdm(*args, **kwargs):
+    kwargs.pop("colour", None)
+    return auto_tqdm(*args, **kwargs)
+
+
+speechbrain.core.tqdm = colab_tqdm
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
@@ -385,7 +392,6 @@ if __name__ == "__main__":
         whisper_sf_brain.hparams.epoch_counter,
         train_data,
         valid_data,
-        progressbar=True,
         train_loader_kwargs=hparams["train_loader_kwargs"],
         valid_loader_kwargs=hparams["valid_loader_kwargs"],
     )
@@ -407,7 +413,6 @@ if __name__ == "__main__":
         valid_data,
         test_loader_kwargs=hparams["test_loader_kwargs"],
         min_key="CoER",
-        progressbar=True,
     )
 
     logger.info("Evaluation on test set...")
@@ -417,5 +422,4 @@ if __name__ == "__main__":
         test_data,
         test_loader_kwargs=hparams["test_loader_kwargs"],
         min_key="CoER",
-        progressbar=True,
     )

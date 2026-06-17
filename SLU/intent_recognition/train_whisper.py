@@ -12,6 +12,8 @@ import os
 import sys
 
 import speechbrain as sb
+import speechbrain.core
+
 import torch
 from hyperpyyaml import load_hyperpyyaml
 import sys
@@ -29,6 +31,12 @@ from hyperpyyaml import load_hyperpyyaml
 from speechbrain.utils.logger import get_logger
 from speechbrain.utils.distributed import run_on_main
 
+
+def colab_tqdm(*args, **kwargs):
+    kwargs.pop("colour", None)
+    return auto_tqdm(*args, **kwargs)
+
+speechbrain.core.tqdm = colab_tqdm
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
